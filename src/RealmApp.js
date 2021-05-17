@@ -14,6 +14,7 @@ export const useRealmApp = () => {
 };
 
 export const RealmAppProvider = ({ appId, children }) => {
+  const [app, setApp] = React.useState(new Realm.App(appId));
   // TODO: Wrap the Realm.App object with React state.
   React.useEffect(() => {
     setApp(new Realm.App(appId));
@@ -22,16 +23,19 @@ export const RealmAppProvider = ({ appId, children }) => {
   // Wrap the Realm.App object's user state with React state
   const [currentUser, setCurrentUser] = React.useState(app.currentUser);
   async function logIn(credentials) {
+    await app.logIn(credentials);
     // TODO: Call the logIn() method with the given credentials
     // If successful, app.currentUser is the user that just logged in
     setCurrentUser(app.currentUser);
   }
   async function logOut() {
+    await app.currentUser?.logOut();
     // Log out the currently active user
     // TODO: Call the logOut() method on the current user.
     // If another user was logged in too, they're now the current user.
     // Otherwise, app.currentUser is null.
     // TODO: Call the setCurrentUser() method on the app's current user.
+    setCurrentUser(app.currentUser);
   }
 
   const wrapped = { ...app, currentUser, logIn, logOut };
